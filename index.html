@@ -5,12 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PUBG Mobile Store</title>
     <style>
-        /* سمة ببجي (خلفية عسكرية/داكنة) */
         :root {
-            --bg-color: #1a1d24; /* خلفية داكنة جداً */
-            --text-color: #e2e8f0; /* نص فاتح */
-            --card-bg: #2d3748; /* لون الخانات رصاصي غامق (Gray-700) */
-            --accent-color: #f59e0b; /* اللون الذهبي */
+            --bg-color: #1a1d24;
+            --text-color: #e2e8f0;
+            --card-bg: #2d3748;
+            --accent-color: #f59e0b;
             --border-color: #4a5568;
         }
 
@@ -18,7 +17,6 @@
         
         body { 
             background-color: var(--bg-color);
-            /* إضافة صورة خلفية مستوحاة من ببجي (اختياري، يمكن استبدال الرابط) */
             background-image: url('https://wallpapercave.com/wp/wp4967669.jpg'); 
             background-size: cover;
             background-position: center;
@@ -28,19 +26,18 @@
             margin: 0;
         }
 
-        /* طبقة شفافة فوق الخلفية لضمان قراءة النص */
         body::before {
             content: '';
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(26, 29, 36, 0.85); /* نفس لون الخلفية مع شفافية */
+            background: rgba(26, 29, 36, 0.85);
             z-index: -1;
         }
 
         .container { 
             max-width: 450px; 
             margin: 0 auto; 
-            background: rgba(45, 55, 72, 0.95); /* خلفية الحاوية رصاصية شبه شفافة */
+            background: rgba(45, 55, 72, 0.95); 
             padding: 25px; 
             border-radius: 15px; 
             box-shadow: 0 10px 25px rgba(0,0,0,0.5);
@@ -50,7 +47,7 @@
         h2 { text-align: center; color: var(--accent-color); margin-bottom: 20px; text-transform: uppercase; letter-spacing: 2px; font-weight: bold; }
         
         .points-box { 
-            background: #1a1d24; /* رصاصي داكن جداً */
+            background: #1a1d24; 
             color: var(--accent-color); 
             padding: 15px; 
             border-radius: 10px; 
@@ -60,7 +57,6 @@
             font-weight: bold;
         }
         
-        /* الأزرار جنب بعض */
         .btn-row { display: flex; gap: 10px; margin-bottom: 15px; }
         .btn-row button, .btn-row a { 
             flex: 1; 
@@ -75,10 +71,10 @@
             transition: background 0.3s;
         }
         
-        .ad-btn { background: #2563eb; } /* أزرق */
+        .ad-btn { background: #2563eb; } 
         .ad-btn:hover { background: #1d4ed8; }
         
-        .pay-btn { background: #7c3aed; } /* بنفسجي */
+        .pay-btn { background: #7c3aed; } 
         .pay-btn:hover { background: #6d28d9; }
         
         .payment-info { 
@@ -89,19 +85,19 @@
             font-size: 0.9rem; 
             margin-bottom: 15px; 
             display: none; 
-            text-align: center; 
+            text-align: right; 
             border: 1px solid var(--border-color);
+            line-height: 1.6;
         }
         
         label { color: #a0aec0; font-size: 0.9rem; margin-bottom: 5px; display: block; }
 
-        /* الخانات باللون الرصاصي */
         select, input { 
             width: 100%; 
             padding: 12px; 
             border-radius: 8px; 
             border: 1px solid var(--border-color); 
-            background: var(--card-bg); /* اللون الرصاصي للخلفية */
+            background: var(--card-bg); 
             color: var(--text-color); 
             margin-bottom: 15px; 
             font-size: 1rem;
@@ -111,7 +107,7 @@
 
         .btn-order { 
             width: 100%; 
-            background: var(--accent-color); /* الذهبي */
+            background: var(--accent-color); 
             color: #1a1d24; 
             padding: 15px; 
             border: none; 
@@ -123,7 +119,6 @@
         }
         .btn-order:hover { background: #d97706; }
 
-        /* تحسين شكل التايمر */
         #timerDisplay { text-align:center; color: var(--accent-color); font-weight:bold; margin-bottom:10px; min-height: 1.2em; }
         #confirmBtn { width:100%; display:none; padding:12px; background:#059669; color:white; border:none; border-radius:8px; margin-bottom:15px; font-weight: bold;}
     </style>
@@ -132,16 +127,20 @@
 
 <div class="container">
     <h2>PUBG STORE</h2>
-    <div class="points-box">رصيدك الحالي: <span id="points">0</span> نقطة 🎁</div>
+    <div class="points-box">
+        رصيدك الحالي: <span id="points">0</span> نقطة 🎁<br>
+        <span id="limitDisplay" style="font-size: 0.85rem; color: #a0aec0;">إعلانات اليوم: 0 / 10</span>
+    </div>
 
     <div class="btn-row">
-        <a href="https://astrayentireillegimateillegimate.com/xuczf83gci?key=b049f11290e19a94e15a9f6e20a5ceb8" target="_blank" class="ad-btn" onclick="startTimer()">📺 مشاهدة إعلان</a>
+        <a id="adLink" href="https://astrayentireillegimateillegimate.com/xuczf83gci?key=b049f11290e19a94e15a9f6e20a5ceb8" target="_blank" class="ad-btn" onclick="startTimer()">📺 مشاهدة إعلان</a>
         <button class="pay-btn" onclick="togglePay()">💰 طرق الدفع</button>
     </div>
 
     <div id="payInfo" class="payment-info">
-        لتحويل المبلغ، يرجى استخدام حساب باي بال التالي:<br>
-        <b>nasfgy65@gmail.com</b>
+        <b>طرق التحويل المتاحة:</b><br>
+        📱 فودافون كاش: <b>01070530900</b><br>
+        🌍 باي بال (PayPal): <b>nasfgy65@gmail.com</b>
     </div>
 
     <div id="timerDisplay"></div>
@@ -149,10 +148,10 @@
 
     <label>اختر الباقة:</label>
     <select id="package">
-        <option value="60 UC">60 شدة - 55 جنيه</option>
-        <option value="325 UC">325 شدة - 260 جنيه</option>
-        <option value="660 UC">660 شدة - 480 جنيه</option>
-        <option value="1800 UC">1800 شدة - 1250 جنيه</option>
+        <option value="60 UC - 55 EGP">60 شدة - 55 جنيه</option>
+        <option value="325 UC - 260 EGP">325 شدة - 260 جنيه</option>
+        <option value="660 UC - 480 EGP">660 شدة - 480 جنيه</option>
+        <option value="1800 UC - 1250 EGP">1800 شدة - 1250 جنيه</option>
     </select>
     
     <label>أدخل الآيدي (ID) الخاص بك:</label>
@@ -163,15 +162,48 @@
 
 <script>
     let userPoints = 0;
+    let maxAdsPerDay = 10; 
     
+    checkDailyLimit();
+
     function togglePay() { 
         let p = document.getElementById('payInfo'); 
         p.style.display = (p.style.display === 'block') ? 'none' : 'block'; 
     }
+
+    function getTodayDate() {
+        return new Date().toISOString().slice(0, 10);
+    }
+
+    function checkDailyLimit() {
+        let lastDate = localStorage.getItem('adDate');
+        let currentDate = getTodayDate();
+        
+        if (lastDate !== currentDate) {
+            localStorage.setItem('adDate', currentDate);
+            localStorage.setItem('adsWatchedToday', '0');
+        }
+
+        let watchedToday = parseInt(localStorage.getItem('adsWatchedToday') || '0');
+        document.getElementById('limitDisplay').innerText = `إعلانات اليوم: ${watchedToday} / ${maxAdsPerDay}`;
+
+        if (watchedToday >= maxAdsPerDay) {
+            let adBtn = document.getElementById('adLink');
+            adBtn.style.pointerEvents = 'none';
+            adBtn.style.opacity = '0.5';
+            adBtn.innerText = '🔒 لقد وصلت للحد الأقصى اليومي';
+        }
+    }
     
     function startTimer() {
+        let watchedToday = parseInt(localStorage.getItem('adsWatchedToday') || '0');
+        if (watchedToday >= maxAdsPerDay) {
+            alert("لقد استنفدت الحد الأقصى لمشاهدة الإعلانات اليوم (10 إعلانات). حاول غداً!");
+            return;
+        }
+
         let timerDiv = document.getElementById('timerDisplay');
-        let btn = document.querySelector('.ad-btn');
+        let btn = document.getElementById('adLink');
         let timeLeft = 20;
         
         btn.style.pointerEvents = 'none';
@@ -193,11 +225,18 @@
     function confirmPoint() {
         userPoints++;
         document.getElementById('points').innerText = userPoints;
+        
+        let watchedToday = parseInt(localStorage.getItem('adsWatchedToday') || '0');
+        watchedToday++;
+        localStorage.setItem('adsWatchedToday', watchedToday);
+
         document.getElementById('confirmBtn').style.display = 'none';
-        let btn = document.querySelector('.ad-btn');
+        let btn = document.getElementById('adLink');
         btn.style.display = 'block';
         btn.style.pointerEvents = 'auto';
         btn.style.opacity = '1';
+        
+        checkDailyLimit();
         alert("تم إضافة النقطة بنجاح!");
     }
 
@@ -210,14 +249,13 @@
             return;
         }
 
-        // تنسيق رسالة واتساب
         let msg = `*طلب شحن جديد - PUBG Mobile*%0A` +
                   `------------------%0A` +
                   `👤 الآيدي: ${id}%0A` +
                   `📦 الباقة: ${pkg}%0A` +
-                  `💰 طريقة الدفع: PayPal (تم)` +
-                  `%0A------------------%0A` +
-                  `🎁 النقاط الحالية: ${userPoints}`;
+                  `💳 تم التحويل عبر: (فودافون كاش: 01070530900 / باي بال)%0A` +
+                  `------------------%0A` +
+                  `🎁 النقاط المستخدمة/المتاحة: ${userPoints}`;
                   
         window.location.href = `https://wa.me/447961684235?text=${msg}`;
     }
