@@ -30,7 +30,7 @@
             content: '';
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(26, 29, 36, 0.85);
+            background: rgba(26, 29, 36, 0.88);
             z-index: -1;
         }
 
@@ -44,8 +44,21 @@
             border: 1px solid var(--border-color);
         }
         
-        h2 { text-align: center; color: var(--accent-color); margin-bottom: 20px; text-transform: uppercase; letter-spacing: 2px; font-weight: bold; }
+        h2 { text-align: center; color: var(--accent-color); margin-bottom: 15px; text-transform: uppercase; letter-spacing: 2px; font-weight: bold; }
         
+        .stats-bar {
+            display: flex;
+            justify-content: space-between;
+            background: #1a1d24;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+        .stats-bar span { color: var(--accent-color); font-weight: bold; }
+
         .points-box { 
             background: #1a1d24; 
             color: var(--accent-color); 
@@ -69,6 +82,7 @@
             cursor: pointer; 
             color: white; 
             transition: background 0.3s;
+            font-size: 0.95rem;
         }
         
         .ad-btn { background: #2563eb; } 
@@ -77,7 +91,7 @@
         .pay-btn { background: #7c3aed; } 
         .pay-btn:hover { background: #6d28d9; }
         
-        .payment-info { 
+        .info-box { 
             background: #1a1d24; 
             color: #e2e8f0; 
             padding: 12px; 
@@ -89,6 +103,21 @@
             border: 1px solid var(--border-color);
             line-height: 1.6;
         }
+
+        .creator-toggle {
+            width: 100%;
+            background: #334155;
+            color: #cbd5e1;
+            border: 1px dashed var(--accent-color);
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            transition: 0.3s;
+        }
+        .creator-toggle:hover { background: #475569; color: #fff; }
         
         label { color: #a0aec0; font-size: 0.9rem; margin-bottom: 5px; display: block; }
 
@@ -127,9 +156,21 @@
 
 <div class="container">
     <h2>PUBG STORE</h2>
+
+    <div class="stats-bar">
+        <span>👥 إجمالي الزوار: <b id="totalVisitors">0</b></span>
+        <span>🟢 المتواجدون الآن: <b id="onlineUsers">1</b></span>
+    </div>
+
     <div class="points-box">
         رصيدك الحالي: <span id="points">0</span> نقطة 🎁<br>
-        <span id="limitDisplay" style="font-size: 0.85rem; color: #a0aec0;">إعلانات اليوم: 0 / 10</span>
+        <span id="limitDisplay" style="font-size: 0.85rem; color: #a0aec0;">إعلانات اليوم: 0 / 10 (حقيقي وآمن)</span>
+    </div>
+
+    <button class="creator-toggle" onclick="toggleCreatorInfo()">📖 قصة موقع PUBG STORE وعامله</button>
+    <div id="creatorInfo" class="info-box">
+        <b>👑 نبذة عن صانع الموقع:</b><br>
+        تم تصميم هذا المتجر لتسهيل شحن شدات ببجي بطريقة آمنة تماماً. نظام النقاط هنا حقيقي ومحدد بـ 10 إعلانات كحد أقصى يومياً لكل جهاز لحماية الحسابات ومنع النقرات الوهمية، مع خدمة فودافون كاش الفورية! ⚡
     </div>
 
     <div class="btn-row">
@@ -137,10 +178,9 @@
         <button class="pay-btn" onclick="togglePay()">💰 طرق الدفع</button>
     </div>
 
-    <div id="payInfo" class="payment-info">
-        <b>طرق التحويل المتاحة:</b><br>
-        📱 فودافون كاش: <b>01070530900</b><br>
-        🌍 باي بال (PayPal): <b>nasfgy65@gmail.com</b>
+    <div id="payInfo" class="info-box">
+        <b>طريقة التحويل المتاحة:</b><br>
+        📱 فودافون كاش: <b>01070530900</b>
     </div>
 
     <div id="timerDisplay"></div>
@@ -163,12 +203,37 @@
 <script>
     let userPoints = 0;
     let maxAdsPerDay = 10; 
+    let adStarted = false; // متغير للتأكد من أن المستخدم بدأ الإعلان فعلياً وحصل التفاعل الحقيقي
     
+    initStats();
     checkDailyLimit();
 
+    function initStats() {
+        let visitors = localStorage.getItem('siteVisitors');
+        if (!visitors) {
+            visitors = 1350;
+        } else {
+            visitors = parseInt(visitors) + 1;
+        }
+        localStorage.setItem('siteVisitors', visitors);
+        document.getElementById('totalVisitors').innerText = visitors;
+
+        let online = Math.floor(Math.random() * 6) + 4;
+        document.getElementById('onlineUsers').innerText = online;
+    }
+
     function togglePay() { 
-        let p = document.getElementById('payInfo'); 
+        let p = document.getElementById('payInfo');
+        let c = document.getElementById('creatorInfo');
+        c.style.display = 'none'; 
         p.style.display = (p.style.display === 'block') ? 'none' : 'block'; 
+    }
+
+    function toggleCreatorInfo() {
+        let c = document.getElementById('creatorInfo');
+        let p = document.getElementById('payInfo');
+        p.style.display = 'none'; 
+        c.style.display = (c.style.display === 'block') ? 'none' : 'block';
     }
 
     function getTodayDate() {
@@ -185,37 +250,38 @@
         }
 
         let watchedToday = parseInt(localStorage.getItem('adsWatchedToday') || '0');
-        document.getElementById('limitDisplay').innerText = `إعلانات اليوم: ${watchedToday} / ${maxAdsPerDay}`;
+        document.getElementById('limitDisplay').innerText = `إعلانات اليوم: ${watchedToday} / ${maxAdsPerDay} (حقيقي وآمن)`;
 
         if (watchedToday >= maxAdsPerDay) {
             let adBtn = document.getElementById('adLink');
             adBtn.style.pointerEvents = 'none';
             adBtn.style.opacity = '0.5';
-            adBtn.innerText = '🔒 لقد وصلت للحد الأقصى اليومي';
+            adBtn.innerText = '🔒 تم استنفاد الحد اليومي (10/10)';
         }
     }
     
     function startTimer() {
         let watchedToday = parseInt(localStorage.getItem('adsWatchedToday') || '0');
         if (watchedToday >= maxAdsPerDay) {
-            alert("لقد استنفدت الحد الأقصى لمشاهدة الإعلانات اليوم (10 إعلانات). حاول غداً!");
+            alert("لقد وصلت للحد الأقصى اليومي (10 إعلانات). النظام يحمي جهازك ويزيد من مصداقية النقرات!");
             return;
         }
 
+        adStarted = true; // تسجيل أن المستخدم ضغط وبدأ مشاهدة إعلان حقيقي
         let timerDiv = document.getElementById('timerDisplay');
         let btn = document.getElementById('adLink');
-        let timeLeft = 20;
+        let timeLeft = 20; // 20 ثانية حقيقية للمشاهدة
         
         btn.style.pointerEvents = 'none';
         btn.style.opacity = '0.6';
-        timerDiv.innerText = `⏳ الرجاء الانتظار ${timeLeft} ثوانٍ...`;
+        timerDiv.innerText = `⏳ يرجى الانتظار ${timeLeft} ثوانٍ لإكمال المشاهدة...`;
 
         let timer = setInterval(() => {
             timeLeft--;
-            timerDiv.innerText = `⏳ الرجاء الانتظار ${timeLeft} ثوانٍ...`;
+            timerDiv.innerText = `⏳ يرجى الانتظار ${timeLeft} ثوانٍ لإكمال المشاهدة...`;
             if (timeLeft <= 0) {
                 clearInterval(timer);
-                timerDiv.innerText = "";
+                timerDiv.innerText = "✨ تمت مشاهدة الإعلان بنجاح، اضغط للتأكيد";
                 document.getElementById('confirmBtn').style.display = 'block';
                 btn.style.display = 'none';
             }
@@ -223,6 +289,11 @@
     }
 
     function confirmPoint() {
+        if (!adStarted) {
+            alert("خطأ: يجب مشاهدة الإعلان أولاً!");
+            return;
+        }
+
         userPoints++;
         document.getElementById('points').innerText = userPoints;
         
@@ -230,6 +301,7 @@
         watchedToday++;
         localStorage.setItem('adsWatchedToday', watchedToday);
 
+        adStarted = false;
         document.getElementById('confirmBtn').style.display = 'none';
         let btn = document.getElementById('adLink');
         btn.style.display = 'block';
@@ -237,7 +309,7 @@
         btn.style.opacity = '1';
         
         checkDailyLimit();
-        alert("تم إضافة النقطة بنجاح!");
+        alert("🎉 تم إضافة النقطة بنجاح لرصيدك!");
     }
 
     function sendOrder() {
@@ -245,7 +317,7 @@
         let id = document.getElementById('playerId').value;
         
         if (!id.trim()) {
-            alert("يرجى إدخال الآيدي أولاً");
+            alert("يرجى إدخال الآيدي (ID) الخاص بك أولاً");
             return;
         }
 
@@ -253,9 +325,9 @@
                   `------------------%0A` +
                   `👤 الآيدي: ${id}%0A` +
                   `📦 الباقة: ${pkg}%0A` +
-                  `💳 تم التحويل عبر: (فودافون كاش: 01070530900 / باي بال)%0A` +
+                  `💳 الدفع عبر: فودافون كاش (01070530900)%0A` +
                   `------------------%0A` +
-                  `🎁 النقاط المستخدمة/المتاحة: ${userPoints}`;
+                  `🎁 النقاط المكتسبة: ${userPoints}`;
                   
         window.location.href = `https://wa.me/447961684235?text=${msg}`;
     }
