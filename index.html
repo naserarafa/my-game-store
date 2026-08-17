@@ -158,7 +158,7 @@
     <h2>PUBG STORE</h2>
 
     <div class="stats-bar">
-        <span>👥 إجمالي الزوار: <b id="totalVisitors">0</b></span>
+        <span>👥 إجمالي الزوار الحقيقيين: <b id="totalVisitors">1</b></span>
         <span>🟢 المتواجدون الآن: <b id="onlineUsers">1</b></span>
     </div>
 
@@ -167,10 +167,14 @@
         <span id="limitDisplay" style="font-size: 0.85rem; color: #a0aec0;">إعلانات اليوم: 0 / 10 (حقيقي وآمن)</span>
     </div>
 
-    <button class="creator-toggle" onclick="toggleCreatorInfo()">📖 قصة موقع PUBG STORE وعامله</button>
+    <button class="creator-toggle" onclick="toggleCreatorInfo()">📚 إرشادات وشروط الاستخدام الهامة</button>
     <div id="creatorInfo" class="info-box">
-        <b>👑 نبذة عن صانع الموقع:</b><br>
-        تم تصميم هذا المتجر لتسهيل شحن شدات ببجي بطريقة آمنة تماماً. نظام النقاط هنا حقيقي ومحدد بـ 10 إعلانات كحد أقصى يومياً لكل جهاز لحماية الحسابات ومنع النقرات الوهمية، مع خدمة فودافون كاش الفورية! ⚡
+        <b>⚠️ إرشادات هامة للاستخدام:</b><br>
+        1. <b>مشاهدة الإعلان:</b> لابد أن تتفرج على الإعلان لمدة 5 ثوانٍ لكي يُحتسب النقاط بنجاح.<br>
+        2. <b>نظام النقاط المتنوعة:</b> النقاط تتغير حسب كل إعلان؛ قد تحظى بنقطة واحدة، نقطتين، أو حتى 3 نقاط كحد أقصى لكل إعلان!<br>
+        3. <b>الحد اليومي:</b> مسموح بحد أقصى 10 إعلانات يومياً لكل جهاز.<br>
+        4. <b>حفظ النقاط:</b> نقاطك محفوظة تلقائياً على متصفحك ولن تختفي عند تحديث الصفحة.<br>
+        5. <b>إتمام الطلب:</b> أدخل الآيدي بدقة، وأرسل الطلب عبر الواتساب مع الدفع عبر فودافون كاش. ⚡
     </div>
 
     <div class="btn-row">
@@ -184,7 +188,7 @@
     </div>
 
     <div id="timerDisplay"></div>
-    <button id="confirmBtn" onclick="confirmPoint()">✅ تأكيد المشاهدة والحصول على النقطة</button>
+    <button id="confirmBtn" onclick="confirmPoint()">✅ تأكيد المشاهدة والحصول على النقاط</button>
 
     <label>اختر الباقة:</label>
     <select id="package">
@@ -201,25 +205,35 @@
 </div>
 
 <script>
-    let userPoints = 0;
     let maxAdsPerDay = 10; 
-    let adStarted = false; // متغير للتأكد من أن المستخدم بدأ الإعلان فعلياً وحصل التفاعل الحقيقي
+    let adStarted = false; 
+    let earnedPointsForThisAd = 1; // تخزين النقاط العشوائية لهذا الإعلان
     
-    initStats();
+    loadUserPoints();
+    initRealStats();
     checkDailyLimit();
 
-    function initStats() {
-        let visitors = localStorage.getItem('siteVisitors');
-        if (!visitors) {
-            visitors = 1350;
-        } else {
-            visitors = parseInt(visitors) + 1;
+    function loadUserPoints() {
+        let savedPoints = localStorage.getItem('userRealPoints');
+        if (!savedPoints) {
+            savedPoints = '0';
+            localStorage.setItem('userRealPoints', '0');
         }
-        localStorage.setItem('siteVisitors', visitors);
-        document.getElementById('totalVisitors').innerText = visitors;
+        document.getElementById('points').innerText = savedPoints;
+    }
 
-        let online = Math.floor(Math.random() * 6) + 4;
-        document.getElementById('onlineUsers').innerText = online;
+    function initRealStats() {
+        let hasVisited = sessionStorage.getItem('hasVisitedThisSession');
+        let totalVisitors = parseInt(localStorage.getItem('realSiteVisitors') || '1');
+
+        if (!hasVisited) {
+            sessionStorage.setItem('hasVisitedThisSession', 'true');
+            totalVisitors++;
+            localStorage.setItem('realSiteVisitors', totalVisitors);
+        }
+
+        document.getElementById('totalVisitors').innerText = totalVisitors;
+        document.getElementById('onlineUsers').innerText = "1";
     }
 
     function togglePay() { 
@@ -263,29 +277,38 @@
     function startTimer() {
         let watchedToday = parseInt(localStorage.getItem('adsWatchedToday') || '0');
         if (watchedToday >= maxAdsPerDay) {
-            alert("لقد وصلت للحد الأقصى اليومي (10 إعلانات). النظام يحمي جهازك ويزيد من مصداقية النقرات!");
+            alert("لقد وصلت للحد الأقصى اليومي (10 إعلانات).");
             return;
         }
 
-        adStarted = true; // تسجيل أن المستخدم ضغط وبدأ مشاهدة إعلان حقيقي
+        adStarted = true; 
+        // توليد نقاط عشوائية لهذا الإعلان بين 1 إلى 3 نقاط
+        earnedPointsForThisAd = Math.floor(Math.random() * 3) + 1;
+
         let timerDiv = document.getElementById('timerDisplay');
         let btn = document.getElementById('adLink');
-        let timeLeft = 20; // 20 ثانية حقيقية للمشاهدة
+        let timeLeft = 5; // تم التعديل إلى 5 ثوانٍ كما طلبت
         
         btn.style.pointerEvents = 'none';
         btn.style.opacity = '0.6';
-        timerDiv.innerText = `⏳ يرجى الانتظار ${timeLeft} ثوانٍ لإكمال المشاهدة...`;
+        timerDiv.innerText = `⏳ يرجى الانتظار ${timeLeft} ثوانٍ...`;
 
         let timer = setInterval(() => {
             timeLeft--;
-            timerDiv.innerText = `⏳ يرجى الانتظار ${timeLeft} ثوانٍ لإكمال المشاهدة...`;
+            timerDiv.innerText = `⏳ يرجى الانتظار ${timeLeft} ثوانٍ...`;
             if (timeLeft <= 0) {
                 clearInterval(timer);
-                timerDiv.innerText = "✨ تمت مشاهدة الإعلان بنجاح، اضغط للتأكيد";
+                timerDiv.innerText = `✨ مبروك! هذا الإعلان يمنحك (${earnedPointsFormText(earnedPointsForThisAd)}), اضغط للتأكيد`;
                 document.getElementById('confirmBtn').style.display = 'block';
                 btn.style.display = 'none';
             }
         }, 1000);
+    }
+
+    function earnedPointsFormText(pts) {
+        if (pts === 1) return "نقطة واحدة";
+        if (pts === 2) return "نقطتين";
+        return "3 نقاط";
     }
 
     function confirmPoint() {
@@ -294,8 +317,10 @@
             return;
         }
 
-        userPoints++;
-        document.getElementById('points').innerText = userPoints;
+        let currentPoints = parseInt(localStorage.getItem('userRealPoints') || '0');
+        currentPoints += earnedPointsForThisAd; // إضافة النقاط العشوائية المحسوبة
+        localStorage.setItem('userRealPoints', currentPoints);
+        document.getElementById('points').innerText = currentPoints;
         
         let watchedToday = parseInt(localStorage.getItem('adsWatchedToday') || '0');
         watchedToday++;
@@ -309,12 +334,13 @@
         btn.style.opacity = '1';
         
         checkDailyLimit();
-        alert("🎉 تم إضافة النقطة بنجاح لرصيدك!");
+        alert(`🎉 تمت إضافة (${earnedPointsFormText(earnedPointsForThisAd)}) بنجاح لرصيدك!`);
     }
 
     function sendOrder() {
         let pkg = document.getElementById('package').value;
         let id = document.getElementById('playerId').value;
+        let finalPoints = localStorage.getItem('userRealPoints') || '0';
         
         if (!id.trim()) {
             alert("يرجى إدخال الآيدي (ID) الخاص بك أولاً");
@@ -327,7 +353,7 @@
                   `📦 الباقة: ${pkg}%0A` +
                   `💳 الدفع عبر: فودافون كاش (01070530900)%0A` +
                   `------------------%0A` +
-                  `🎁 النقاط المكتسبة: ${userPoints}`;
+                  `🎁 النقاط المكتسبة: ${finalPoints}`;
                   
         window.location.href = `https://wa.me/447961684235?text=${msg}`;
     }
